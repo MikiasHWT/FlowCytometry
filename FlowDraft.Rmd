@@ -1,0 +1,39 @@
+---
+title: "FlowDraft"
+author: "Mikias HW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(flowCore)
+```
+
+# flowframe
+```{r}
+file.name <- system.file("extdata","0877408774.B08",
+package="flowCore")
+
+x <- read.FCS(file.name, alter.names=TRUE, transformation=FALSE)
+
+summary(x)
+```
+
+# flowset
+```{r}
+fcs.dir <- system.file("extdata",
+"compdata",
+"data",
+package="flowCore")
+
+frames <- lapply(dir(fcs.dir, full.names=TRUE), read.FCS)
+
+names(frames) <- sapply(frames, keyword, "SAMPLE ID")
+
+fs <- as(frames, "flowSet")
+
+fs
+
+sampleNames(fs)
+```
+
