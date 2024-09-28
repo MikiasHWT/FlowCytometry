@@ -7,9 +7,10 @@ output: html_document
 
 ```{r}
 library(flowCore)
+library(ggcyto)
 ```
 
-# flowframe
+# flowFrame
 ```{r}
 file.name <- system.file("extdata","0877408774.B08",
 package="flowCore")
@@ -19,8 +20,10 @@ x <- read.FCS(file.name, alter.names=TRUE, transformation=FALSE)
 summary(x)
 ```
 
-# flowset
+# flowSet
 ```{r}
+# fs <- read.flowSet(path = fcs.dir)
+
 fcs.dir <- system.file("extdata",
 "compdata",
 "data",
@@ -35,5 +38,56 @@ fs <- as(frames, "flowSet")
 fs
 
 sampleNames(fs)
+
+# Extract metadata
+phenoData(fs)$Filename <- fsApply(fs,keyword, "$FIL")
+
+pData(phenoData(fs))
+
+summary(fs[2])
 ```
+
+# Visualize
+```{r}
+# ggcyto
+autoplot(fs, "FSC-H", "SSC-H")
+
+```
+
+# Compensation
+```{r}
+fcsfiles <- system.file("extdata",
+"compdata",
+"data",
+package="flowCore")
+
+# 
+
+
+fs <- read.flowSet(fcsfiles)
+
+x <- fs[[1]]
+
+comp_list <- spillover(x)
+```
+
+```{r}
+library(healthyFlowData)
+
+data(hd)
+
+fs <- hd.flowSet
+
+fs
+
+sampleNames(fs)
+
+summary(fs[1])
+
+autoplot(fs[1], "CD4", "CD8")
+
+
+```
+
+
 
